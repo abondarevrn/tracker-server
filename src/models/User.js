@@ -13,30 +13,44 @@ const userSchema = new mongoose.Schema({
   }
 });
 
+// Pre saving password we add a salt and hash it with bcrypt
 userSchema.pre("save", function(next) {
   const user = this;
-  // ?????
+
   if (!user.isModified("password")) {
     return next();
   }
+
   bcrypt.genSalt(10, (err, salt) => {
     if (err) {
-      return next();
+      return next(err);
     }
 
     bcrypt.hash(user.password, salt, (err, hash) => {
       if (err) {
-        return next();
+        return next(err);
       }
       user.password = hash;
+      return next();
     });
   });
 });
 
-// ??????
+// When user tries to log in
 userSchema.methods.comparePassword = function(candidatePassword) {
+  const user = this;
   return new Promise((resolve, reject) => {
-    bcrypt;
+    bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
+      if (err) {
+        return reject(err);
+      }
+
+      if (!isMatch) {
+        return reject(false);
+      }
+
+      resolve(true);
+    });
   });
 };
 
