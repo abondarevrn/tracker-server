@@ -5,7 +5,8 @@
   "author": "Andriy Bondarev",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "tunnel": "ngrok http 3000"
   },
   "dependencies": {
     "bcrypt": "^3.0.6",
